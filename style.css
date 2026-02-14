@@ -1,0 +1,230 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #0f0f1a;
+  color: #e0e0e0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+#fireworks {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 100;
+}
+
+#app {
+  text-align: center;
+  padding: 1.5rem;
+  max-width: 600px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+header {
+  margin-bottom: 1.2rem;
+}
+
+h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: #888;
+  margin-top: 0.3rem;
+  font-weight: 500;
+}
+
+#bingo-board {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin: 0 auto 1.2rem;
+  max-width: 540px;
+  aspect-ratio: 1;
+}
+
+.cell {
+  background: #1a1a2e;
+  border: 2px solid #2a2a4a;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  line-height: 1.2;
+  position: relative;
+  overflow: hidden;
+}
+
+.cell:hover {
+  border-color: #667eea;
+  background: #1e1e3a;
+  transform: scale(1.03);
+  z-index: 2;
+}
+
+.cell:active {
+  transform: scale(0.97);
+}
+
+.cell.selected {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-color: #764ba2;
+  color: #fff;
+  box-shadow: 0 0 15px rgba(102, 126, 234, 0.3);
+}
+
+.cell.selected:hover {
+  background: linear-gradient(135deg, #7a8ff0, #8a5cb8);
+  border-color: #8a5cb8;
+}
+
+.cell.free-space {
+  background: linear-gradient(135deg, #2d2d5e, #3d2d6e);
+  border-color: #4a3a7a;
+  font-size: 0.85rem;
+}
+
+.cell.free-space.selected {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.cell.winning {
+  animation: winPulse 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes winPulse {
+  from {
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.4);
+  }
+  to {
+    box-shadow: 0 0 25px rgba(240, 147, 251, 0.7), 0 0 50px rgba(102, 126, 234, 0.3);
+  }
+}
+
+.cell .stamp {
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  font-size: 0.65rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.cell.selected .stamp {
+  opacity: 1;
+}
+
+.controls {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+}
+
+.controls button {
+  background: #1a1a2e;
+  border: 2px solid #2a2a4a;
+  color: #ccc;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.controls button:hover {
+  border-color: #667eea;
+  color: #fff;
+  background: #1e1e3a;
+}
+
+.win-banner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  z-index: 200;
+  animation: none;
+}
+
+.win-banner.show {
+  animation: bannerPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes bannerPop {
+  0% { transform: translate(-50%, -50%) scale(0) rotate(-10deg); }
+  60% { transform: translate(-50%, -50%) scale(1.1) rotate(2deg); }
+  100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+}
+
+.win-text {
+  font-size: 5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #f093fb, #f5576c, #fda085, #f6d365);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  filter: drop-shadow(0 0 30px rgba(240, 147, 251, 0.5));
+  letter-spacing: 8px;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Column headers */
+.col-header {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #667eea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 0;
+  cursor: default;
+  background: transparent;
+  border: none;
+}
+
+.col-header:hover {
+  transform: none;
+  background: transparent;
+  border: none;
+}
+
+@media (max-width: 500px) {
+  #app { padding: 1rem; }
+  h1 { font-size: 1.6rem; }
+  .cell { font-size: 0.6rem; border-radius: 6px; padding: 4px; }
+  #bingo-board { gap: 4px; }
+  .win-text { font-size: 3.5rem; }
+}
