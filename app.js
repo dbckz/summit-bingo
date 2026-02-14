@@ -11,7 +11,8 @@
   const board = document.getElementById('bingo-board');
   const winBanner = document.getElementById('win-banner');
   let cells = [];
-  let hasWon = false;
+  let gotBingo = false;
+  let gotFullHouse = false;
 
   // --- Fireworks ---
   const canvas = document.getElementById('fireworks');
@@ -164,7 +165,8 @@
   }
 
   function buildBoard() {
-    hasWon = false;
+    gotBingo = false;
+    gotFullHouse = false;
     fireworksActive = false;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     winBanner.classList.remove('show');
@@ -210,7 +212,7 @@
   }
 
   function toggleCell(cell, index) {
-    if (hasWon) return;
+    if (gotFullHouse) return;
     const isSelected = cell.dataset.selected === 'true';
     cell.dataset.selected = isSelected ? 'false' : 'true';
     cell.classList.toggle('selected');
@@ -222,6 +224,16 @@
 
   function checkWin() {
     const grid = cells.map(c => c.dataset.selected === 'true');
+
+    // Check full house first
+    if (grid.every(Boolean)) {
+      triggerFullHouse();
+      return;
+    }
+
+    // Only check for first bingo
+    if (gotBingo) return;
+
     const lines = [];
 
     // Rows
@@ -248,17 +260,38 @@
 
     for (const line of lines) {
       if (line.every(idx => grid[idx])) {
-        triggerWin(line);
+        triggerBingo(line);
         return;
       }
     }
   }
 
-  function triggerWin(winningLine) {
-    hasWon = true;
+  function showBanner(text) {
+    const winText = winBanner.querySelector('.win-text');
+    winText.textContent = text;
+    winBanner.classList.remove('hidden', 'show');
+    void winBanner.offsetWidth;
+    winBanner.classList.add('show');
+    startFireworks();
+    // Auto-dismiss after a few seconds so player can continue
+    setTimeout(() => {
+      stopFireworks();
+      winBanner.classList.remove('show');
+    }, 4000);
+  }
+
+  function triggerBingo(winningLine) {
+    gotBingo = true;
     winningLine.forEach(idx => cells[idx].classList.add('winning'));
-    winBanner.classList.remove('hidden');
-    // Force reflow to restart animation
+    showBanner('BINGO!');
+  }
+
+  function triggerFullHouse() {
+    gotFullHouse = true;
+    cells.forEach(c => c.classList.add('winning'));
+    const winText = winBanner.querySelector('.win-text');
+    winText.textContent = 'FULL HOUSE!';
+    winBanner.classList.remove('hidden', 'show');
     void winBanner.offsetWidth;
     winBanner.classList.add('show');
     startFireworks();
@@ -267,7 +300,8 @@
   // --- Controls ---
   document.getElementById('new-card').addEventListener('click', buildBoard);
   document.getElementById('reset').addEventListener('click', () => {
-    hasWon = false;
+    gotBingo = false;
+    gotFullHouse = false;
     stopFireworks();
     winBanner.classList.remove('show');
     winBanner.classList.add('hidden');
