@@ -173,6 +173,7 @@ h1 {
   transform: translate(-50%, -50%) scale(0);
   z-index: 200;
   animation: none;
+  text-align: center;
 }
 
 .win-banner.show {
@@ -195,6 +196,28 @@ h1 {
   text-shadow: none;
   filter: drop-shadow(0 0 30px rgba(240, 147, 251, 0.5));
   letter-spacing: 8px;
+}
+
+.win-subtext {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #ccc;
+  margin-top: 0.3rem;
+  letter-spacing: 1px;
+}
+
+.status-bar {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f093fb;
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
 }
 
 .hidden {

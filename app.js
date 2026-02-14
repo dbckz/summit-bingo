@@ -171,6 +171,7 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     winBanner.classList.remove('show');
     winBanner.classList.add('hidden');
+    statusBar.classList.add('hidden');
     board.innerHTML = '';
     cells = [];
     particles = [];
@@ -266,31 +267,36 @@
     }
   }
 
-  function showBanner(text) {
-    const winText = winBanner.querySelector('.win-text');
-    winText.textContent = text;
-    winBanner.classList.remove('hidden', 'show');
-    void winBanner.offsetWidth;
-    winBanner.classList.add('show');
-    startFireworks();
-    // Auto-dismiss after a few seconds so player can continue
-    setTimeout(() => {
-      stopFireworks();
-      winBanner.classList.remove('show');
-    }, 4000);
-  }
+  const statusBar = document.getElementById('status-bar');
+  const winSubtext = winBanner.querySelector('.win-subtext');
 
   function triggerBingo(winningLine) {
     gotBingo = true;
     winningLine.forEach(idx => cells[idx].classList.add('winning'));
-    showBanner('BINGO!');
+
+    const winText = winBanner.querySelector('.win-text');
+    winText.textContent = 'BINGO!';
+    winSubtext.textContent = 'Now go for the Full House!';
+    winBanner.classList.remove('hidden', 'show');
+    void winBanner.offsetWidth;
+    winBanner.classList.add('show');
+    startFireworks();
+
+    setTimeout(() => {
+      stopFireworks();
+      winBanner.classList.remove('show');
+      statusBar.textContent = 'BINGO! Now go for the Full House!';
+      statusBar.classList.remove('hidden');
+    }, 4000);
   }
 
   function triggerFullHouse() {
     gotFullHouse = true;
+    statusBar.classList.add('hidden');
     cells.forEach(c => c.classList.add('winning'));
     const winText = winBanner.querySelector('.win-text');
     winText.textContent = 'FULL HOUSE!';
+    winSubtext.textContent = '';
     winBanner.classList.remove('hidden', 'show');
     void winBanner.offsetWidth;
     winBanner.classList.add('show');
@@ -305,6 +311,7 @@
     stopFireworks();
     winBanner.classList.remove('show');
     winBanner.classList.add('hidden');
+    statusBar.classList.add('hidden');
     cells.forEach((cell, i) => {
       cell.classList.remove('winning');
       if (i === centerIndex) return;
